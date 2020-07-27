@@ -24,34 +24,36 @@ struct ContentView: View {
             List {
                 ForEach(cityCollection.cities) { city in
                     CityWeather(city: city)
+                    .id(UUID()) // fix for extra animation when moving an item up in a list (see developer.apple.com/forums/thread/133134)
                 }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        self.cityCollection.cities.remove(at: index)
-                    }
-                }
-                .onMove { indexSet, index in
-                    self.cityCollection.cities.move(fromOffsets: indexSet, toOffset: index)
-                }
+                .onMove(perform: move)
+                .onDelete(perform: remove)
             }
-        .navigationBarTitle("Weather")
-        .navigationBarItems(leading: EditButton(),
-                            trailing: Button(
-                                action: {
-                                    self.showCitySearch = true
-                            },
-                                label: {
-                                    Image(systemName: "plus").imageScale(.large)
-                            }))
+            .navigationBarTitle("Weather")
+            .navigationBarItems(leading: EditButton(),
+                                trailing: Button(
+                                    action: {
+                                        self.showCitySearch = true
+                                },
+                                    label: {
+                                        Image(systemName: "plus").imageScale(.large)
+                                }))
         }
         .sheet(isPresented: $showCitySearch) {
             CitySearch(isShown: self.$showCitySearch) { searchResult in
-                DispatchQueue.main.async {
-                    self.cityCollection.cities.append(City(name: searchResult))
-                }
+                self.cityCollection.cities.append(City(name: searchResult))
             }
         }
     }
+    
+    private func move(from source: IndexSet, to destination: Int) {
+        self.cityCollection.cities.move(fromOffsets: source, toOffset: destination)
+    }
+    
+    private func remove(at offsets: IndexSet) {
+        self.cityCollection.cities.remove(atOffsets: offsets)
+    }
+    
 }
 
 
