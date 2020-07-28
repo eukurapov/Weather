@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @ObservedObject var cityCollection: CityStore
+    @ObservedObject var weatherFetcher: WeatherFetcher
     
     @Environment(\.editMode) var editMode
     
@@ -22,8 +22,8 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(cityCollection.cities) { city in
-                    CityWeather(city: city)
+                ForEach(weatherFetcher.locations) { location in
+                    CityWeather(location: location)
                     .id(UUID()) // fix for extra animation when moving an item up in a list (see developer.apple.com/forums/thread/133134)
                 }
                 .onMove(perform: move)
@@ -41,17 +41,20 @@ struct ContentView: View {
         }
         .sheet(isPresented: $showCitySearch) {
             CitySearch(isShown: self.$showCitySearch) { searchResult in
-                self.cityCollection.cities.append(City(name: searchResult))
+                //self.weatherFetcher.locations.append(City(name: searchResult))
             }
+        }
+        .onAppear {
+            self.weatherFetcher.fetchLocations(for: "Moscow")
         }
     }
     
     private func move(from source: IndexSet, to destination: Int) {
-        self.cityCollection.cities.move(fromOffsets: source, toOffset: destination)
+        self.weatherFetcher.locations.move(fromOffsets: source, toOffset: destination)
     }
     
     private func remove(at offsets: IndexSet) {
-        self.cityCollection.cities.remove(atOffsets: offsets)
+        self.weatherFetcher.locations.remove(atOffsets: offsets)
     }
     
 }
@@ -77,7 +80,7 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let cityCollection = CityStore()
-        return ContentView(cityCollection: cityCollection)
+        let weatherFetcher = WeatherFetcher()
+        return ContentView(weatherFetcher: weatherFetcher)
     }
 }
