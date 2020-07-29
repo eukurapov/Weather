@@ -8,6 +8,10 @@
 
 import Foundation
 
+struct OWListResult: Codable {
+    private(set) var list: [OWLocation]
+}
+
 struct OWLocation: Codable, Identifiable, Hashable {
     
     private(set) var id: Int

@@ -10,8 +10,9 @@ import SwiftUI
 
 struct CitySearch: View {
     
+    @EnvironmentObject var weatherFetcher: WeatherFetcher
     @Binding var isShown: Bool
-    var onTap: (_ searchResult: String) -> ()
+    var onTap: (_ searchResult: OWLocation) -> ()
     
     @State var searchText: String = ""
     
@@ -27,19 +28,36 @@ struct CitySearch: View {
                 }
             }
             .padding()
-            TextField("Type city name for search", text: $searchText)
-                .padding(.horizontal)
+            HStack {
+                TextField("Type city name for search", text: $searchText)
+                Spacer()
+                Button(
+                    action: {
+                        self.weatherFetcher.findLocations(for: self.searchText)
+                },
+                    label: {
+                        Image(systemName: "magnifyingglass")
+                })
+            }
+            .padding(.horizontal)
             List {
-                HStack {
-                    Text(searchText)
-                    Spacer()
-                }
-                .onTapGesture {
-                    self.onTap(self.searchText)
-                    self.isShown = false
+                ForEach(weatherFetcher.searchResults, id: \.id) { location in
+                    CityWeather(location: location)
+                        .onTapGesture {
+                            self.onTap(location)
+                            self.weatherFetcher.searchResults.removeAll()
+                            self.isShown = false
+                        }
                 }
             }
         }
     }
     
+}
+
+struct CitySearch_Previews: PreviewProvider {
+    static var previews: some View {
+        CitySearch(isShown: Binding<Bool>.constant(true), onTap: { _ in return })
+        .environmentObject(WeatherFetcher())
+    }
 }

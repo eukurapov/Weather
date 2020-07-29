@@ -1,21 +1,21 @@
 //
-//  OWFindRequest.swift
+//  OWWeatherRequest.swift
 //  Weather
 //
-//  Created by Eugene Kurapov on 28.07.2020.
+//  Created by Eugene Kurapov on 29.07.2020.
 //  Copyright © 2020 Eugene Kurapov. All rights reserved.
 //
 
 import Foundation
 
-class OWFindRequest: OWRequest<OWLocation> {
+class OWWeatherRequest: OWRequest<OWLocation> {
     
-    private(set) var searchRequest: String
+    private(set) var ids: [Int]
     
-    override var query: String { "find?q=\(self.searchRequest)" }
+    override var query: String { "group?id=\(ids.map { String($0) }.joined(separator: ","))" }
     
-    init(searchRequest: String) {
-        self.searchRequest = searchRequest
+    init(ids: [Int]) {
+        self.ids = ids
         super.init()
     }
     
@@ -23,5 +23,5 @@ class OWFindRequest: OWRequest<OWLocation> {
         let result = try? JSONDecoder().decode(OWListResult.self, from: json)
         return Set(result?.list ?? [])
     }
-    
+
 }
