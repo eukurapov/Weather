@@ -1,5 +1,5 @@
 //
-//  CitySearch.swift
+//  LocationSearch.swift
 //  Weather
 //
 //  Created by Eugene Kurapov on 17.07.2020.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct CitySearch: View {
+struct LocationSearch: View {
     
     @EnvironmentObject var weatherFetcher: WeatherFetcher
     @Binding var isShown: Bool
@@ -41,10 +41,10 @@ struct CitySearch: View {
             }
             .padding(.horizontal)
             List {
-                ForEach(weatherFetcher.searchResults, id: \.id) { location in
-                    CityWeather(location: location)
+                ForEach(weatherFetcher.searchResults, id: \.id) { owlocation in
+                    Text("\(owlocation.name), \(owlocation.sys.country)")
                         .onTapGesture {
-                            self.onTap(location)
+                            self.onTap(owlocation)
                             self.weatherFetcher.searchResults.removeAll()
                             self.isShown = false
                         }
@@ -55,9 +55,9 @@ struct CitySearch: View {
     
 }
 
-struct CitySearch_Previews: PreviewProvider {
-    static var previews: some View {
-        CitySearch(isShown: Binding<Bool>.constant(true), onTap: { _ in return })
-        .environmentObject(WeatherFetcher())
-    }
-}
+//struct CitySearch_Previews: PreviewProvider {
+//    static var previews: some View {
+//        LocationSearch(isShown: Binding<Bool>.constant(true), onTap: { _ in return })
+//        .environmentObject(WeatherFetcher())
+//    }
+//}

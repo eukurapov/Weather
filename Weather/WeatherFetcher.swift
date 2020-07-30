@@ -8,16 +8,17 @@
 
 import SwiftUI
 import Combine
+import CoreData
 
 class WeatherFetcher: ObservableObject {
     
-    @Published var locations: [OWLocation] = []
     @Published var searchResults: [OWLocation] = []
     
     private var findRequest: OWFindRequest!
     private var findResultCancellable: AnyCancellable?
     
     func findLocations(for request: String) {
+        self.searchResults.removeAll()
         self.findResultCancellable = nil
         findRequest?.stopFetching()
         findRequest = OWFindRequest(searchRequest: request)
@@ -30,14 +31,16 @@ class WeatherFetcher: ObservableObject {
     private var weatherRequest: OWWeatherRequest!
     private var weatherResultCancellable: AnyCancellable?
     
-    func fetchLocations() {
-        guard !locations.isEmpty else { return }
+    func fetchLocations(with ids: [Int], in context: NSManagedObjectContext) {
+        guard !ids.isEmpty else { return }
         self.weatherResultCancellable = nil
         weatherRequest?.stopFetching()
-        weatherRequest = OWWeatherRequest(ids: locations.map { $0.id })
+        weatherRequest = OWWeatherRequest(ids: ids)
         weatherRequest.fetch()
-        weatherResultCancellable = weatherRequest?.results.sink { [weak self] results in
-            self?.locations = results.compactMap( { $0 } )
+        weatherResultCancellable = weatherRequest?.results.sink { results in
+            for owlocation in results {
+                Location.from(owlocation, context: context)
+            }
         }
     }
     

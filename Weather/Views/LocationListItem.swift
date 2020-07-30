@@ -1,5 +1,5 @@
 //
-//  CityWeather.swift
+//  LocationListItem.swift
 //  Weather
 //
 //  Created by Eugene Kurapov on 17.07.2020.
@@ -8,9 +8,9 @@
 
 import SwiftUI
 
-struct CityWeather: View {
+struct LocationListItem: View {
     
-    var location: OWLocation
+    var location: Location
     
     @State var iconImage: UIImage?
     @State var flagImage: UIImage?
@@ -33,7 +33,7 @@ struct CityWeather: View {
             .frame(width: 50)
             VStack {
                 HStack {
-                    Text(location.name).font(.headline)
+                    Text(location.name ?? "Unknown").font(.headline)
                     if flagImage != nil {
                         Image(uiImage: flagImage!)
                             .fixedSize()
@@ -41,19 +41,19 @@ struct CityWeather: View {
                     Spacer()
                 }
                 HStack {
-                    Text("\(String(format: "%.2f", location.main.temp))°C")
+                    Text("\(String(format: "%.2f", location.weather?.temp ?? 0))°C")
                         .font(Font.caption.bold())
                         .foregroundColor(.white)
                         .padding(.horizontal, 2)
                         .background(RoundedRectangle(cornerRadius: 3))
                     HStack {
-                        Text(location.weather.first?.description ?? "")
+                        Text(location.weather?.condition ?? "")
                         Spacer()
                         HStack {
                             Image(systemName: "location.north")
                                 .imageScale(.small)
-                                .rotationEffect(Angle(degrees: Double(location.wind.deg)))
-                            Text(String(format: "%.1f", location.wind.speed))
+                                .rotationEffect(Angle(degrees: Double(location.weather?.windDegree ?? 0)))
+                            Text(String(format: "%.1f", location.weather?.windSpeed ?? 0))
                         }
                         .padding(.leading, 10)
                     }
@@ -72,11 +72,11 @@ struct CityWeather: View {
     
     private func fetchIconImageData() {
         iconImage = nil
-        if let url = self.location.weather.first?.iconUrl {
+        if let url = self.location.weather?.conditionIconURL {
             DispatchQueue.global(qos: .userInitiated).async {
                 if let imageData = try? Data(contentsOf: url) {
                     DispatchQueue.main.async {
-                        if url == self.location.weather.first?.iconUrl {
+                        if url == self.location.weather?.conditionIconURL {
                             self.iconImage = UIImage(data: imageData)
                             self.loading = false
                         }
@@ -88,11 +88,11 @@ struct CityWeather: View {
     
     private func fetchFlagImageData() {
         flagImage = nil
-        if let url = self.location.sys.flagIconUrl {
+        if let url = self.location.countryFlagURL {
             DispatchQueue.global(qos: .userInitiated).async {
                 if let imageData = try? Data(contentsOf: url) {
                     DispatchQueue.main.async {
-                        if url == self.location.sys.flagIconUrl {
+                        if url == self.location.countryFlagURL {
                             self.flagImage = UIImage(data: imageData)
                         }
                     }

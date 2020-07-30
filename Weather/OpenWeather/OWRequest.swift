@@ -21,7 +21,6 @@ class OWRequest<Fetched> where Fetched: Codable, Fetched: Hashable {
     
     func fetch() {
         if let urlRequest = self.urlRequest {
-            print("fetching \(urlRequest)")
             fetchCancellable = URLSession.shared.dataTaskPublisher(for: urlRequest)
             .map { [weak self] data, response in
                 self?.decode(data) ?? []

@@ -57,7 +57,6 @@ struct OWLocation: Codable, Identifiable, Hashable {
     }
     
     struct Description: Codable, Hashable {
-        private(set) var id: Int
         private(set) var main: String
         private(set) var description: String
         private(set) var icon: String
