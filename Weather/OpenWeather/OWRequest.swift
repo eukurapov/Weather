@@ -36,10 +36,13 @@ class OWRequest<Fetched> where Fetched: Codable, Fetched: Hashable {
     }
     
     static func authorizedURLRequest(query: String) -> URLRequest? {
+        guard let credentials = Bundle.main.object(forInfoDictionaryKey: "OpenWeather API Key") as? String, !credentials.isEmpty
+        else {
+            print("WARN: No OpenWeather API Key found -- Add your Open Weather API key into info in format appid=<API KEY>")
+            return nil
+        }
         let openWeatherURL = "https://api.openweathermap.org/data/2.5/"
         let units = "units=metric"
-        /// - TODO Move to app config
-        let credentials = "appid=c5588028674615c78e4c9c91bdb8c303"
         if let url = URL(string: openWeatherURL + query + "&\(units)&\(credentials)") {
             return URLRequest(url: url)
         }
