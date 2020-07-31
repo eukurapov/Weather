@@ -50,6 +50,7 @@ struct LocationSearch: View {
                             Text("\(owlocation.name), \(owlocation.sys.country)")
                             Spacer()
                         }
+                        .contentShape(Rectangle())
                         .onTapGesture {
                             self.onTap(owlocation)
                             self.weatherFetcher.completeSearch()
