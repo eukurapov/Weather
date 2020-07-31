@@ -65,7 +65,7 @@ struct LocationListView: View {
     }
     
     private func updateLocations() {
-        self.weatherFetcher.fetchLocations(with: self.locations.map( { Int($0.id) } ), in: self.context)
+        self.weatherFetcher.fetchLocations(with: self.locations.map( { $0.id } ), in: self.context)
     }
     
     private func move(from source: IndexSet, to destination: Int) {

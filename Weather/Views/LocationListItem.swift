@@ -33,7 +33,7 @@ struct LocationListItem: View {
             .frame(width: 50)
             VStack {
                 HStack {
-                    Text(location.name ?? "Unknown").font(.headline)
+                    Text(location.name).font(.headline)
                     if flagImage != nil {
                         Image(uiImage: flagImage!)
                             .fixedSize()

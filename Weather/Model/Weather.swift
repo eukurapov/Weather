@@ -10,17 +10,27 @@ import CoreData
 
 extension Weather: Identifiable {
     
+    var windDegree: Int {
+        get { Int(windDegree_) }
+        set { windDegree_ = Int16(newValue) }
+    }
+    
+    var pressure: Int {
+        get { Int(pressure_) }
+        set { pressure_ = Int64(newValue) }
+    }
+    
     static func from(_ owlocation: OWLocation, context: NSManagedObjectContext) -> Weather {
-        let request = fetchRequest(NSPredicate(format: "location.id = %@", NSNumber(value: owlocation.id)))
+        let request = fetchRequest(NSPredicate(format: "location.id_ = %@", NSNumber(value: owlocation.id)))
         let results = (try? context.fetch(request)) ?? []
         let weather = results.first ?? Weather(context: context)
         weather.temp = owlocation.main.temp
         weather.tempMin = owlocation.main.tempMin
         weather.tempMax = owlocation.main.tempMax
         weather.feelsLike = owlocation.main.feelsLike
-        weather.pressure = Int64(owlocation.main.pressure)
+        weather.pressure = owlocation.main.pressure
         weather.windSpeed = owlocation.wind.speed
-        weather.windDegree = Int64(owlocation.wind.deg)
+        weather.windDegree = owlocation.wind.deg
         weather.group = owlocation.weather.first?.main
         weather.condition = owlocation.weather.first?.description
         weather.conditionIconURL = owlocation.weather.first?.iconUrl

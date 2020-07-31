@@ -10,30 +10,45 @@ import CoreData
 
 extension Location: Identifiable {
     
+    public var id: Int {
+        get { Int(id_) }
+        set { id_ = Int64(newValue) }
+    }
+    
+    var order: Int {
+        get { Int(order_) }
+        set { order_ = Int16(newValue) }
+    }
+    
+    var name: String {
+        get { name_ ?? "Unknown" }
+        set { name_ = newValue  }
+    }
+    
     static func fetchRequest(_ predicate: NSPredicate) -> NSFetchRequest<Location> {
         let request = NSFetchRequest<Location>(entityName: "Location")
         request.predicate = predicate
-        request.sortDescriptors = [NSSortDescriptor(key: "order", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "order_", ascending: true)]
         return request
     }
     
     private static func getBy(_ id: Int, context: NSManagedObjectContext) -> Location {
-        let request = fetchRequest(NSPredicate(format: "id = %@", NSNumber(value: id)))
+        let request = fetchRequest(NSPredicate(format: "id_ = %@", NSNumber(value: id)))
         let results = (try? context.fetch(request)) ?? []
         if let location = results.first {
             return location
         } else {
             let location = Location(context: context)
-            location.id = Int64(id)
+            location.id = id
             location.order = nextOrder(context: context)
             return location
         }
     }
     
-    private static func nextOrder(context: NSManagedObjectContext) -> Int16 {
+    private static func nextOrder(context: NSManagedObjectContext) -> Int {
         let request = fetchRequest(.all)
         let results = (try? context.fetch(request)) ?? []
-        return Int16(results.count)
+        return results.count
     }
     
     @discardableResult
@@ -52,7 +67,7 @@ extension Location: Identifiable {
     
     func setOrder(_ order: Int) {
         let context = self.managedObjectContext
-        self.order = Int16(order)
+        self.order = order
         try? context?.save()
     }
     
