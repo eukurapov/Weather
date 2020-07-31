@@ -13,11 +13,13 @@ import CoreData
 class WeatherFetcher: ObservableObject {
     
     @Published var searchResults: [OWLocation] = []
+    @Published var searchState: SearchState = .notStarted
     
     private var findRequest: OWFindRequest!
     private var findResultCancellable: AnyCancellable?
     
     func findLocations(for request: String) {
+        self.searchState = .searching
         self.searchResults.removeAll()
         self.findResultCancellable = nil
         findRequest?.stopFetching()
@@ -25,7 +27,13 @@ class WeatherFetcher: ObservableObject {
         findRequest.fetch()
         findResultCancellable = findRequest?.results.sink { [weak self] results in
             self?.searchResults = results.compactMap( { $0 } )
+            self?.searchState = .completed // does not work as it triggered each time results changed, not when request is completed
         }
+    }
+    
+    func completeSearch() {
+        searchResults.removeAll()
+        searchState = .notStarted
     }
     
     private var weatherRequest: OWWeatherRequest!
@@ -42,6 +50,10 @@ class WeatherFetcher: ObservableObject {
                 Location.from(owlocation, context: context)
             }
         }
+    }
+    
+    enum SearchState {
+        case completed, searching, notStarted
     }
     
 }

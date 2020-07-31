@@ -14,6 +14,8 @@ struct LocationListView: View {
     @FetchRequest(fetchRequest: Location.fetchRequest(.all)) var locations: FetchedResults<Location>
     @ObservedObject var weatherFetcher: WeatherFetcher = WeatherFetcher()
     
+    @ObservedObject var locationFetcher = LocationFetcher()
+    
     @State var showCitySearch: Bool = false
     
     @Environment(\.editMode) var editMode
@@ -23,13 +25,16 @@ struct LocationListView: View {
     
     var body: some View {
          NavigationView {
-            List {
-                ForEach(locations) { location in
-                    LocationListItem(location: location)
-                    .id(UUID()) // fix for extra animation when moving an item up in a list (see developer.apple.com/forums/thread/133134)
+            VStack {
+                Text("\(self.locationFetcher.lastLocation?.latitude.description ?? ""), \(self.locationFetcher.lastLocation?.longitude.description ?? "")")
+                List {
+                    ForEach(locations) { location in
+                        LocationListItem(location: location)
+                        .id(UUID()) // fix for extra animation when moving an item up in a list (see developer.apple.com/forums/thread/133134)
+                    }
+                    .onMove(perform: move)
+                    .onDelete(perform: remove)
                 }
-                .onMove(perform: move)
-                .onDelete(perform: remove)
             }
             .navigationBarTitle("Weather")
             .navigationBarItems(
@@ -61,6 +66,7 @@ struct LocationListView: View {
         }
         .onAppear {
             self.updateLocations()
+            self.locationFetcher.start()
         }
     }
     

@@ -48,7 +48,7 @@ extension Location: Identifiable {
     private static func nextOrder(context: NSManagedObjectContext) -> Int {
         let request = fetchRequest(.all)
         let results = (try? context.fetch(request)) ?? []
-        return results.count
+        return (results.max(by: { $0.order < $1.order } )?.order ?? 0) + 1
     }
     
     @discardableResult

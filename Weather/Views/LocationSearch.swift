@@ -10,11 +10,11 @@ import SwiftUI
 
 struct LocationSearch: View {
     
+    @State var searchText: String = ""
+    
     @EnvironmentObject var weatherFetcher: WeatherFetcher
     @Binding var isShown: Bool
     var onTap: (_ searchResult: OWLocation) -> ()
-    
-    @State var searchText: String = ""
     
     var body: some View {
         VStack {
@@ -29,7 +29,7 @@ struct LocationSearch: View {
             }
             .padding()
             HStack {
-                TextField("Type city name for search", text: $searchText)
+                TextField("Type full city name for search", text: $searchText)
                 Spacer()
                 Button(
                     action: {
@@ -41,13 +41,21 @@ struct LocationSearch: View {
             }
             .padding(.horizontal)
             List {
-                ForEach(weatherFetcher.searchResults, id: \.id) { owlocation in
-                    Text("\(owlocation.name), \(owlocation.sys.country)")
+                if weatherFetcher.searchResults.isEmpty && weatherFetcher.searchState == .completed {
+                    Text("Could not find a location for your request. Please make sure to input full city name.")
+                        .font(.caption)
+                } else {
+                    ForEach(weatherFetcher.searchResults, id: \.id) { owlocation in
+                        HStack {
+                            Text("\(owlocation.name), \(owlocation.sys.country)")
+                            Spacer()
+                        }
                         .onTapGesture {
                             self.onTap(owlocation)
-                            self.weatherFetcher.searchResults.removeAll()
+                            self.weatherFetcher.completeSearch()
                             self.isShown = false
                         }
+                    }
                 }
             }
         }

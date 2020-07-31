@@ -15,7 +15,7 @@ class OWFindRequest: OWRequest<OWLocation> {
     override var query: String { "find?q=\(self.searchRequest)" }
     
     init(searchRequest: String) {
-        self.searchRequest = searchRequest
+        self.searchRequest = searchRequest.replacingOccurrences(of: " ", with: "+")
         super.init()
     }
     

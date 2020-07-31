@@ -18,6 +18,7 @@
 		44073B5524C1FB3600FF4955 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44073B5424C1FB3600FF4955 /* Location.swift */; };
 		44073B5724C207F000FF4955 /* LocationSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44073B5624C207F000FF4955 /* LocationSearch.swift */; };
 		44073B5B24C2087A00FF4955 /* LocationListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44073B5A24C2087A00FF4955 /* LocationListItem.swift */; };
+		44614CE424D452C4006A49DB /* LocationFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44614CE324D452C4006A49DB /* LocationFetcher.swift */; };
 		447293C424D06E7C0056F517 /* OWLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447293C324D06E7C0056F517 /* OWLocation.swift */; };
 		447293C824D078D60056F517 /* OWFindRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 447293C724D078D60056F517 /* OWFindRequest.swift */; };
 		4473BF3124D19F2200A5738A /* OWWeatherRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4473BF3024D19F2200A5738A /* OWWeatherRequest.swift */; };
@@ -40,6 +41,7 @@
 		44073B5424C1FB3600FF4955 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		44073B5624C207F000FF4955 /* LocationSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearch.swift; sourceTree = "<group>"; };
 		44073B5A24C2087A00FF4955 /* LocationListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationListItem.swift; sourceTree = "<group>"; };
+		44614CE324D452C4006A49DB /* LocationFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationFetcher.swift; sourceTree = "<group>"; };
 		447293C324D06E7C0056F517 /* OWLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWLocation.swift; sourceTree = "<group>"; };
 		447293C724D078D60056F517 /* OWFindRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWFindRequest.swift; sourceTree = "<group>"; };
 		4473BF3024D19F2200A5738A /* OWWeatherRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OWWeatherRequest.swift; sourceTree = "<group>"; };
@@ -78,13 +80,13 @@
 		44073B3A24C1E70100FF4955 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				44614CE524D45380006A49DB /* Fetchers */,
 				4497239524D2F580006002AE /* Extensions */,
 				44B58EEA24CF33E600E72029 /* OpenWeather */,
 				4497239424D2F554006002AE /* Model */,
 				44073B5824C2082A00FF4955 /* Views */,
 				44073B3B24C1E70100FF4955 /* AppDelegate.swift */,
 				44073B3D24C1E70100FF4955 /* SceneDelegate.swift */,
-				44073B5224C1FAE700FF4955 /* WeatherFetcher.swift */,
 				44073B4424C1E70400FF4955 /* Assets.xcassets */,
 				44073B4924C1E70400FF4955 /* LaunchScreen.storyboard */,
 				44073B4C24C1E70400FF4955 /* Info.plist */,
@@ -110,6 +112,15 @@
 				44073B5A24C2087A00FF4955 /* LocationListItem.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		44614CE524D45380006A49DB /* Fetchers */ = {
+			isa = PBXGroup;
+			children = (
+				44073B5224C1FAE700FF4955 /* WeatherFetcher.swift */,
+				44614CE324D452C4006A49DB /* LocationFetcher.swift */,
+			);
+			path = Fetchers;
 			sourceTree = "<group>";
 		};
 		4497239424D2F554006002AE /* Model */ = {
@@ -213,6 +224,7 @@
 			files = (
 				4473BF3124D19F2200A5738A /* OWWeatherRequest.swift in Sources */,
 				44073B4124C1E70100FF4955 /* Weather.xcdatamodeld in Sources */,
+				44614CE424D452C4006A49DB /* LocationFetcher.swift in Sources */,
 				44073B3C24C1E70100FF4955 /* AppDelegate.swift in Sources */,
 				44073B5524C1FB3600FF4955 /* Location.swift in Sources */,
 				44073B4324C1E70100FF4955 /* LocationListView.swift in Sources */,
