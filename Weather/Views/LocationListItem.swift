@@ -16,10 +16,12 @@ struct LocationListItem: View {
     @State var flagImage: UIImage?
     @State var loading = false
     
-    private var dateFormatter: DateFormatter {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
+    private var dateFormatter: RelativeDateTimeFormatter {
+        let dateFormatter = RelativeDateTimeFormatter()
+//        dateFormatter.dateStyle = .short
+//        dateFormatter.timeStyle = .short
+        dateFormatter.dateTimeStyle = .named
+        dateFormatter.unitsStyle = .short
         return dateFormatter
     }
     
@@ -49,7 +51,7 @@ struct LocationListItem: View {
                         Image(systemName: "location.circle.fill").imageScale(.small)
                     }
                     Spacer()
-                    Text(dateFormatter.string(from: location.lastUpdated))
+                    Text(dateFormatter.localizedString(for: location.lastUpdated, relativeTo: Date()))
                         .font(.footnote)
                         .foregroundColor(.gray)
                 }
