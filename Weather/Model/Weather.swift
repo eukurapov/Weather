@@ -20,6 +20,16 @@ extension Weather: Identifiable {
         set { pressure_ = Int64(newValue) }
     }
     
+    var windDirection: String {
+        switch windDegree {
+            case 0..<45, 315..<360: return "N"
+            case 45..<135: return "E"
+            case 135..<225: return "S"
+            case 225..<315: return "W"
+            default: return ""
+        }
+    }
+    
     static func from(_ owlocation: OWLocation, context: NSManagedObjectContext) -> Weather {
         let request = fetchRequest(NSPredicate(format: "location.id_ = %@", NSNumber(value: owlocation.id)))
         let results = (try? context.fetch(request)) ?? []

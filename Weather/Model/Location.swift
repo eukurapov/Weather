@@ -7,6 +7,31 @@
 //
 
 import CoreData
+import MapKit
+
+extension Location: MKAnnotation {
+    
+    public var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    public var title: String? {
+        var title = name
+        if let code = countryCode { title += ", \(code)" }
+        return title
+    }
+    
+    public var subtitle: String? {
+        if let weather = weather {
+            var subtitle = "\(weather.temp)°C"
+            if let condition = weather.condition { subtitle += ", \(condition)" }
+            subtitle += ", \(weather.windDirection) \(weather.windSpeed)m/s"
+            return subtitle
+        }
+        return nil
+    }
+    
+}
 
 extension Location: Identifiable {
     

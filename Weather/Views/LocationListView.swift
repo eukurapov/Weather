@@ -18,6 +18,7 @@ struct LocationListView: View {
     @ObservedObject var locationFetcher = LocationFetcher()
     
     @State var showCitySearch: Bool = false
+    @State var showWeatherMap: Bool = false
     
     @Environment(\.editMode) var editMode
     // fix for Navigaitionview being disabled after editor is closed by button
@@ -42,6 +43,23 @@ struct LocationListView: View {
                 trailing: HStack {
                     Button(
                         action: {
+                            self.showWeatherMap = true
+                    },
+                        label: {
+                            Image(systemName: "map")
+                                .imageScale(.medium)
+                                .padding(.horizontal, 5)
+                    })
+                    .sheet(isPresented: $showWeatherMap) {
+                        NavigationView {
+                            MapView(annotations: Array(self.locations), center: self.locations.first(where: { $0.isCurrent }))
+                            .edgesIgnoringSafeArea(.all)
+                            .navigationBarTitle("Map", displayMode: .inline)
+                            .navigationBarItems(trailing: Button("Done", action: { self.showWeatherMap = false }))
+                        }
+                    }
+                    Button(
+                        action: {
                             self.updateLocations()
                     },
                         label: {
@@ -56,13 +74,13 @@ struct LocationListView: View {
                         label: {
                             Image(systemName: "plus").imageScale(.large)
                     })
+                    .sheet(isPresented: $showCitySearch) {
+                        LocationSearch(isShown: self.$showCitySearch) { searchResult in
+                            Location.from(searchResult, context: self.context, source: .manual)
+                        }
+                        .environmentObject(self.weatherFetcher)
+                    }
             })
-        }
-        .sheet(isPresented: $showCitySearch) {
-            LocationSearch(isShown: self.$showCitySearch) { searchResult in
-                Location.from(searchResult, context: self.context, source: .manual)
-            }
-            .environmentObject(self.weatherFetcher)
         }
         .onAppear {
             self.locationFetcher.start()
