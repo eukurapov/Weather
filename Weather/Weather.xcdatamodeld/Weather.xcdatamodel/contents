@@ -4,10 +4,12 @@
         <attribute name="countryCode" optional="YES" attributeType="String"/>
         <attribute name="countryFlagURL" optional="YES" attributeType="URI"/>
         <attribute name="id_" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isCurrent" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name_" optional="YES" attributeType="String"/>
         <attribute name="order_" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="source_" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="weather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Weather" inverseName="location" inverseEntity="Weather"/>
     </entity>
     <entity name="Weather" representedClassName="Weather" syncable="YES" codeGenerationType="class">
@@ -24,7 +26,7 @@
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="weather" inverseEntity="Location"/>
     </entity>
     <elements>
-        <element name="Location" positionX="-329.85546875" positionY="-201.62890625" width="156.42578125" height="163"/>
+        <element name="Location" positionX="-329.85546875" positionY="-201.62890625" width="156.42578125" height="193"/>
         <element name="Weather" positionX="-54" positionY="36" width="128.58203125" height="208"/>
     </elements>
 </model>

@@ -38,6 +38,9 @@ struct LocationListItem: View {
                         Image(uiImage: flagImage!)
                             .fixedSize()
                     }
+                    if location.isCurrent {
+                        Image(systemName: "location.circle.fill").imageScale(.small)
+                    }
                     Spacer()
                 }
                 HStack {

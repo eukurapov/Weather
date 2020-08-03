@@ -7,11 +7,14 @@
 //
 
 import CoreLocation
+import Combine
 
 class LocationFetcher: NSObject, CLLocationManagerDelegate, ObservableObject {
     
     let manager = CLLocationManager()
     @Published var lastLocation: CLLocationCoordinate2D?
+    
+    var currentLocation = CurrentValueSubject<CLLocationCoordinate2D?, Never>(nil)
     
     override init() {
         super.init()
@@ -20,12 +23,15 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate, ObservableObject {
     
     func start() {
         manager.requestWhenInUseAuthorization()
-        manager.distanceFilter = 1000
+        manager.distanceFilter = self.distanceFilter
         manager.startUpdatingLocation()
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         lastLocation = locations.first?.coordinate
+        currentLocation.value = locations.first?.coordinate
     }
+    
+    private let distanceFilter: CLLocationDistance = 1000
     
 }

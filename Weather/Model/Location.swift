@@ -10,6 +10,8 @@ import CoreData
 
 extension Location: Identifiable {
     
+    enum Source: Int16 { case manual = 1, location }
+    
     public var id: Int {
         get { Int(id_) }
         set { id_ = Int64(newValue) }
@@ -25,10 +27,33 @@ extension Location: Identifiable {
         set { name_ = newValue  }
     }
     
+    var source: Source? {
+        get { Source(rawValue: source_) }
+        set {
+            if source != .manual {
+                source_ = newValue?.rawValue ?? Source.manual.rawValue
+            }
+        }
+    }
+    
+    func setAsCurrent() {
+        let request = Location.fetchRequest(NSPredicate(format: "isCurrent = YES"))
+        let results = (try? self.managedObjectContext?.fetch(request)) ?? []
+        if let current = results.first {
+            if current.id != self.id && current.source == .location {
+                current.remove()
+            } else {
+                current.isCurrent = false
+            }
+        }
+        self.isCurrent = true
+        try? self.managedObjectContext?.save()
+    }
+    
     static func fetchRequest(_ predicate: NSPredicate) -> NSFetchRequest<Location> {
         let request = NSFetchRequest<Location>(entityName: "Location")
         request.predicate = predicate
-        request.sortDescriptors = [NSSortDescriptor(key: "order_", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "isCurrent", ascending: false), NSSortDescriptor(key: "order_", ascending: true)]
         return request
     }
     
@@ -41,6 +66,7 @@ extension Location: Identifiable {
             let location = Location(context: context)
             location.id = id
             location.order = nextOrder(context: context)
+            location.isCurrent = false
             return location
         }
     }
@@ -52,8 +78,12 @@ extension Location: Identifiable {
     }
     
     @discardableResult
-    static func from(_ owlocation: OWLocation, context: NSManagedObjectContext) -> Location {
+    static func from(_ owlocation: OWLocation, context: NSManagedObjectContext, source: Source? = nil) -> Location {
         let location = getBy(owlocation.id, context: context)
+        // rough solution to rewrite source when current location is also added manually to keep it in place when location is changed
+        if source != nil {
+            location.source = source
+        }
         location.name = owlocation.name
         location.latitude = owlocation.coord.lat
         location.longitude = owlocation.coord.lon

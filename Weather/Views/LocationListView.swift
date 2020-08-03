@@ -8,6 +8,7 @@
 
 import SwiftUI
 import CoreData
+import Combine
 
 struct LocationListView: View {
 
@@ -26,7 +27,6 @@ struct LocationListView: View {
     var body: some View {
          NavigationView {
             VStack {
-                Text("\(self.locationFetcher.lastLocation?.latitude.description ?? ""), \(self.locationFetcher.lastLocation?.longitude.description ?? "")")
                 List {
                     ForEach(locations) { location in
                         LocationListItem(location: location)
@@ -60,18 +60,27 @@ struct LocationListView: View {
         }
         .sheet(isPresented: $showCitySearch) {
             LocationSearch(isShown: self.$showCitySearch) { searchResult in
-                Location.from(searchResult, context: self.context)
+                Location.from(searchResult, context: self.context, source: .manual)
             }
             .environmentObject(self.weatherFetcher)
         }
         .onAppear {
-            self.updateLocations()
             self.locationFetcher.start()
+            self.updateLocations()
+            UITableView.appearance().separatorStyle = .none
         }
     }
     
+    @State private var locationCancellable: AnyCancellable?
+    
     private func updateLocations() {
-        self.weatherFetcher.fetchLocations(with: self.locations.map( { $0.id } ), in: self.context)
+        self.weatherFetcher.fetchLocations(with: self.locations.filter( { !$0.isCurrent } ).map( { $0.id } ), in: self.context)
+        locationCancellable?.cancel()
+        self.locationCancellable = self.locationFetcher.currentLocation.sink { location in
+            if let lastLocation = location {
+                self.weatherFetcher.fetchCurrentLocationAt(latitude: lastLocation.latitude, longitude: lastLocation.longitude, in: self.context)
+            }
+        }
     }
     
     private func move(from source: IndexSet, to destination: Int) {

@@ -41,6 +41,7 @@ class WeatherFetcher: ObservableObject {
     
     func fetchLocations(with ids: [Int], in context: NSManagedObjectContext) {
         guard !ids.isEmpty else { return }
+        self.weatherResultCancellable?.cancel()
         self.weatherResultCancellable = nil
         weatherRequest?.stopFetching()
         weatherRequest = OWWeatherRequest(ids: ids)
@@ -48,6 +49,22 @@ class WeatherFetcher: ObservableObject {
         weatherResultCancellable = weatherRequest?.results.sink { results in
             for owlocation in results {
                 Location.from(owlocation, context: context)
+            }
+        }
+    }
+    
+    private var weatherLocationRequest: OWWeatherRequest!
+    private var weatherLocationResultCancellable: AnyCancellable?
+    
+    func fetchCurrentLocationAt(latitude: Double, longitude: Double, in context: NSManagedObjectContext) {
+        self.weatherLocationResultCancellable?.cancel()
+        self.weatherLocationResultCancellable = nil
+        weatherLocationRequest?.stopFetching()
+        weatherLocationRequest = OWWeatherRequest(location: (latitude: latitude, longitude: longitude))
+        weatherLocationRequest.fetch()
+        weatherLocationResultCancellable = weatherLocationRequest?.results.sink { results in
+            if let owlocation = results.first {
+                Location.from(owlocation, context: context, source: .location).setAsCurrent()
             }
         }
     }
