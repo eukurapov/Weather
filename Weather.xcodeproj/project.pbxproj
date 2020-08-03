@@ -80,6 +80,7 @@
 		44073B3A24C1E70100FF4955 /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				44073B3F24C1E70100FF4955 /* Weather.xcdatamodeld */,
 				44614CE524D45380006A49DB /* Fetchers */,
 				4497239524D2F580006002AE /* Extensions */,
 				44B58EEA24CF33E600E72029 /* OpenWeather */,
@@ -90,7 +91,6 @@
 				44073B4424C1E70400FF4955 /* Assets.xcassets */,
 				44073B4924C1E70400FF4955 /* LaunchScreen.storyboard */,
 				44073B4C24C1E70400FF4955 /* Info.plist */,
-				44073B3F24C1E70100FF4955 /* Weather.xcdatamodeld */,
 				44073B4624C1E70400FF4955 /* Preview Content */,
 			);
 			path = Weather;

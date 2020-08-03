@@ -18,6 +18,8 @@ class WeatherFetcher: ObservableObject {
     private var findRequest: OWFindRequest!
     private var findResultCancellable: AnyCancellable?
     
+    private let updateThreshold: TimeInterval = 10*60
+    
     func findLocations(for request: String) {
         self.searchState = .searching
         self.searchResults.removeAll()
@@ -39,7 +41,9 @@ class WeatherFetcher: ObservableObject {
     private var weatherRequest: OWWeatherRequest!
     private var weatherResultCancellable: AnyCancellable?
     
-    func fetchLocations(with ids: [Int], in context: NSManagedObjectContext) {
+    func fetch(_ locations: [Location], in context: NSManagedObjectContext) {
+        guard !locations.isEmpty else { return }
+        let ids = locations.filter { $0.lastUpdated.advanced(by: updateThreshold) < Date() } .map { $0.id }
         guard !ids.isEmpty else { return }
         self.weatherResultCancellable?.cancel()
         self.weatherResultCancellable = nil

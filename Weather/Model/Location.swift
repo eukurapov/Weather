@@ -36,6 +36,11 @@ extension Location: Identifiable {
         }
     }
     
+    var lastUpdated: Date {
+        get { return lastUpdated_ ?? Date.distantPast }
+        set { lastUpdated_ = newValue }
+    }
+    
     func setAsCurrent() {
         let request = Location.fetchRequest(NSPredicate(format: "isCurrent = YES"))
         let results = (try? self.managedObjectContext?.fetch(request)) ?? []
@@ -80,6 +85,7 @@ extension Location: Identifiable {
     @discardableResult
     static func from(_ owlocation: OWLocation, context: NSManagedObjectContext, source: Source? = nil) -> Location {
         let location = getBy(owlocation.id, context: context)
+        location.lastUpdated = Date()
         // rough solution to rewrite source when current location is also added manually to keep it in place when location is changed
         if source != nil {
             location.source = source

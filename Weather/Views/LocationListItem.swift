@@ -16,6 +16,13 @@ struct LocationListItem: View {
     @State var flagImage: UIImage?
     @State var loading = false
     
+    private var dateFormatter: DateFormatter {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        return dateFormatter
+    }
+    
     var body: some View {
         HStack {
             Group {
@@ -42,6 +49,9 @@ struct LocationListItem: View {
                         Image(systemName: "location.circle.fill").imageScale(.small)
                     }
                     Spacer()
+                    Text(dateFormatter.string(from: location.lastUpdated))
+                        .font(.footnote)
+                        .foregroundColor(.gray)
                 }
                 HStack {
                     Text("\(String(format: "%.2f", location.weather?.temp ?? 0))°C")

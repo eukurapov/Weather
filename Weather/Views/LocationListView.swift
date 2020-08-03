@@ -74,7 +74,7 @@ struct LocationListView: View {
     @State private var locationCancellable: AnyCancellable?
     
     private func updateLocations() {
-        self.weatherFetcher.fetchLocations(with: self.locations.filter( { !$0.isCurrent } ).map( { $0.id } ), in: self.context)
+        self.weatherFetcher.fetch(Array(self.locations), in: self.context)
         locationCancellable?.cancel()
         self.locationCancellable = self.locationFetcher.currentLocation.sink { location in
             if let lastLocation = location {
