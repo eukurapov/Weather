@@ -12,7 +12,6 @@ import Combine
 class LocationFetcher: NSObject, CLLocationManagerDelegate, ObservableObject {
     
     let manager = CLLocationManager()
-    @Published var lastLocation: CLLocationCoordinate2D?
     
     var currentLocation = CurrentValueSubject<CLLocationCoordinate2D?, Never>(nil)
     
@@ -26,10 +25,12 @@ class LocationFetcher: NSObject, CLLocationManagerDelegate, ObservableObject {
         manager.distanceFilter = self.distanceFilter
         manager.startUpdatingLocation()
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastLocation = locations.first?.coordinate
-        currentLocation.value = locations.first?.coordinate
+        if let newLocation = locations.first?.coordinate,
+            (currentLocation.value?.latitude != newLocation.latitude || currentLocation.value?.longitude != newLocation.longitude) {
+            currentLocation.value = newLocation
+        }
     }
     
     private let distanceFilter: CLLocationDistance = 1000
