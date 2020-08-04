@@ -10,9 +10,12 @@ import SwiftUI
 import UIKit
 import MapKit
 
+// struct to wrap UIKit MapView and make it working for SwiftUI
 struct MapView: UIViewRepresentable {
     
+    // list of MKAnnotation objects to display on map
     var annotations: [MKAnnotation]
+    // position to center at when map is shown
     var center: MKAnnotation?
     
     func makeUIView(context: Context) -> MKMapView {
@@ -34,8 +37,10 @@ struct MapView: UIViewRepresentable {
         return Coordinator()
     }
     
+    // delegate class for MapView
     class Coordinator: NSObject, MKMapViewDelegate {
         
+        // generating a view for annotation
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             let view = mapView.dequeueReusableAnnotationView(withIdentifier: "MapViewAnnotation") ??
                 MKPinAnnotationView(annotation: annotation, reuseIdentifier: "MapViewAnnotation")
