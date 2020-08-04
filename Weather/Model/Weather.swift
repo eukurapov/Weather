@@ -8,6 +8,7 @@
 
 import CoreData
 
+// extension for CoreData generated class to wrap optional values and support generating from OpenWeather API response
 extension Weather: Identifiable {
     
     var windDegree: Int {
@@ -30,9 +31,12 @@ extension Weather: Identifiable {
         }
     }
     
+    // creates or updates a record in CoreData based on OW response
     static func from(_ owlocation: OWLocation, context: NSManagedObjectContext) -> Weather {
+        // fetching related DB record by location id
         let request = fetchRequest(NSPredicate(format: "location.id_ = %@", NSNumber(value: owlocation.id)))
         let results = (try? context.fetch(request)) ?? []
+        // create new record if not found
         let weather = results.first ?? Weather(context: context)
         weather.temp = owlocation.main.temp
         weather.tempMin = owlocation.main.tempMin
@@ -44,10 +48,12 @@ extension Weather: Identifiable {
         weather.group = owlocation.weather.first?.main
         weather.condition = owlocation.weather.first?.description
         weather.conditionIconURL = owlocation.weather.first?.iconUrl
-        try? context.save()
+        // saving changes seems not required here as it's saved in Location.from(_:context:source)
+        //try? context.save()
         return weather
     }
     
+    // generate CoreData request with general sorting options and provided predicate
     static func fetchRequest(_ predicate: NSPredicate) -> NSFetchRequest<Weather> {
         let request = NSFetchRequest<Weather>(entityName: "Weather")
         request.predicate = predicate

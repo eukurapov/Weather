@@ -9,6 +9,7 @@
 import CoreData
 import MapKit
 
+// support showing Location on map
 extension Location: MKAnnotation {
     
     public var coordinate: CLLocationCoordinate2D {
@@ -33,8 +34,10 @@ extension Location: MKAnnotation {
     
 }
 
+// extension for CoreData generated class to wrap optional values and support generating from OpenWeather API response
 extension Location: Identifiable {
     
+    // location source to handle adding a record for current user location and do not remove it when user location is changed
     enum Source: Int16 { case manual = 1, location }
     
     public var id: Int {
@@ -66,7 +69,9 @@ extension Location: Identifiable {
         set { lastUpdated_ = newValue }
     }
     
+    // sets location as the one related to current user location
     func setAsCurrent() {
+        // request and remove / unset flag for previous current location
         let request = Location.fetchRequest(NSPredicate(format: "isCurrent = YES"))
         let results = (try? self.managedObjectContext?.fetch(request)) ?? []
         if let current = results.first {
@@ -80,6 +85,7 @@ extension Location: Identifiable {
         try? self.managedObjectContext?.save()
     }
     
+    // generate CoreData request with general sorting options and provided predicate
     static func fetchRequest(_ predicate: NSPredicate) -> NSFetchRequest<Location> {
         let request = NSFetchRequest<Location>(entityName: "Location")
         request.predicate = predicate
@@ -87,6 +93,8 @@ extension Location: Identifiable {
         return request
     }
     
+    // search location in DB by id
+    // create new Location if not found
     private static func getBy(_ id: Int, context: NSManagedObjectContext) -> Location {
         let request = fetchRequest(NSPredicate(format: "id_ = %@", NSNumber(value: id)))
         let results = (try? context.fetch(request)) ?? []
@@ -101,12 +109,15 @@ extension Location: Identifiable {
         }
     }
     
+    // generate next order number — value that is used to sort and reorder locations in list
     private static func nextOrder(context: NSManagedObjectContext) -> Int {
         let request = fetchRequest(.all)
         let results = (try? context.fetch(request)) ?? []
         return (results.max(by: { $0.order < $1.order } )?.order ?? 0) + 1
     }
     
+    // creates or updates a record in CoreData based on OW response
+    // function result can be ignored (not assigned to any variable)
     @discardableResult
     static func from(_ owlocation: OWLocation, context: NSManagedObjectContext, source: Source? = nil) -> Location {
         let location = getBy(owlocation.id, context: context)
