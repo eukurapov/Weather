@@ -60,6 +60,9 @@ struct LocationSearch: View {
                 }
             }
         }
+        .onDisappear {
+            self.weatherFetcher.completeSearch()
+        }
     }
     
 }

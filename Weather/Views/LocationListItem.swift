@@ -18,8 +18,6 @@ struct LocationListItem: View {
     
     private var dateFormatter: RelativeDateTimeFormatter {
         let dateFormatter = RelativeDateTimeFormatter()
-//        dateFormatter.dateStyle = .short
-//        dateFormatter.timeStyle = .short
         dateFormatter.dateTimeStyle = .named
         dateFormatter.unitsStyle = .short
         return dateFormatter
@@ -76,13 +74,15 @@ struct LocationListItem: View {
                     .foregroundColor(.gray)
                 }
             }
+            .padding(.trailing)
             .onAppear() {
                 self.loading = true
                 self.fetchIconImageData()
                 self.fetchFlagImageData()
             }
         }
-        .frame(height: 50)
+        .frame(height: 70)
+        .background(RoundedRectangle(cornerRadius: 5).foregroundColor(.white).shadow(radius: 2))
     }
     
     private func fetchIconImageData() {

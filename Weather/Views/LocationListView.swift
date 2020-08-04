@@ -25,6 +25,8 @@ struct LocationListView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.managedObjectContext) var context
     
+//    @State var selectedItem: Location?
+    
     var body: some View {
          NavigationView {
             VStack {
@@ -32,6 +34,18 @@ struct LocationListView: View {
                     ForEach(locations) { location in
                         LocationListItem(location: location)
                         .id(UUID()) // fix for extra animation when moving an item up in a list (see developer.apple.com/forums/thread/133134)
+//                        .onTapGesture {
+//                            if self.selectedItem != location {
+//                                self.selectedItem = location
+//                            } else {
+//                                self.selectedItem = nil
+//                            }
+//                        }
+//                        if self.selectedItem == location {
+//                            HStack {
+//                                Text("Here could be a feorecast")
+//                            }.frame(minHeight: 120)
+//                        }
                     }
                     .onMove(perform: move)
                     .onDelete(perform: remove)
@@ -65,14 +79,14 @@ struct LocationListView: View {
                         label: {
                             Image(systemName: "arrow.clockwise")
                                 .imageScale(.medium)
-                                .padding(.horizontal, 5)
+                                .padding(2)
                     })
                     Button(
                         action: {
                             self.showCitySearch = true
                     },
                         label: {
-                            Image(systemName: "plus").imageScale(.large)
+                            Image(systemName: "plus").imageScale(.large).padding(2)
                     })
                     .sheet(isPresented: $showCitySearch) {
                         LocationSearch(isShown: self.$showCitySearch) { searchResult in
