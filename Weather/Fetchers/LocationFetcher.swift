@@ -9,10 +9,12 @@
 import CoreLocation
 import Combine
 
-class LocationFetcher: NSObject, CLLocationManagerDelegate, ObservableObject {
+// LocationManager delegate to handle current user location updates
+class LocationFetcher: NSObject, CLLocationManagerDelegate {
     
     let manager = CLLocationManager()
     
+    // current location variable available for updates subscription (use sink to get value once it's updated / available)
     var currentLocation = CurrentValueSubject<CLLocationCoordinate2D?, Never>(nil)
     
     override init() {

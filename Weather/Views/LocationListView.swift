@@ -16,7 +16,7 @@ struct LocationListView: View {
     @FetchRequest(fetchRequest: Location.fetchRequest(.all)) var locations: FetchedResults<Location>
     // helpers to fetch weather using OpenWeather API and to get current user location
     @ObservedObject var weatherFetcher: WeatherFetcher = WeatherFetcher()
-    @ObservedObject var locationFetcher = LocationFetcher()
+    var locationFetcher = LocationFetcher()
     
     // states to show related sheets
     @State var showLocationSearch: Bool = false
